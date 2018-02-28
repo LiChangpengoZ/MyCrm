@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="system.work.mapper.ProjectMapper">
+
+	<!-- 映射 -->
+	<resultMap id="BaseResultMap" type="system.work.model.ProjectModel">
+		<result column="project_name" property="projectName" />
+		<result column="user_code" property="userCode" />
+		<result column="all_score" property="allScore" />
+		<result column="student_score" property="studentScore" />
+		<result column="teacher_score" property="teacherScore" />
+		<result column="grade" property="grade" />
+		
+		<result column="id" property="id" />
+		<result column="code" property="code" />
+		<result column="createtime" property="createtime" />
+		<result column="updatetime" property="updatetime" />
+		<result column="creator" property="creator" />
+		<result column="updater" property="updater" />
+		<result column="isdelete" property="isdelete" />
+		<result column="iseffect" property="iseffect" />
+		<result column="descr" property="descr" />
+	</resultMap>
+	
+	<!-- 高级映射 -->
+	<resultMap id="HighResultMap" type="system.work.model.ProjectModel">
+	  <result property="projectName" column="pProjectName"/>
+	  <result property="userCode" column="pUserCode"/>
+	  <result property="allScore" column="pAllScore"/>
+	  <result property="studentScore" column="pStudentScore"/>
+	  <result property="teacherScore" column="pTeacherScore"/>
+	  <result property="grade" column="pGrade"/>
+	  <result property="code" column="pCode"/>
+	  <result property="time" column="pTime"/>
+	  <result property="descr" column="pDescr"/>
+	  <result property="studentGrade" column="pStudentGrade"/>
+	  
+	  <association property="uUser" javaType="system.user.model.UserModel">
+	  	<result property="userName" column="uUserName"/>
+	    <result property="trueName" column="uTrueName"/>
+	    <result property="roleCode" column="uRoleCode"/>
+	    <result property="calssCode" column="uCalssCode"/>
+	  </association>
+	  
+	</resultMap>
+
+	<!-- 全部字段 -->
+	<sql id="Base_Column_List">
+		project_name,user_code,all_score,student_score,teacher_score,grade,
+		id,code,createtime,updatetime,creator,updater,isdelete,iseffect,descr
+	</sql>
+	
+	<!-- 主要字段 -->
+	<sql id="Main_Column_List">
+		project_name,user_code,all_score,student_score,teacher_score,grade
+	</sql>
+	
+	<!-- 子查询/未改 -->
+	<sql id="Join_Column_List">
+		a,b,
+		(select t2.c
+		from table2) c
+	</sql>
+	
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<if test="projectName != null and projectName != ''">
+			and project_name like CONCAT('%', #{projectName}, '%')
+		</if>
+		<if test="userCode != null and userCode != ''">
+			and user_code = #{userCode}
+		</if>
+		<if test="allScore != null and allScore != ''">
+			and all_score = #{allScore}
+		</if>
+		<if test="grade != null and grade != ''">
+			and grade = #{grade}
+		</if>
+		
+		<if test="id != null">
+			and id = #{id}
+		</if>
+		<if test="code != null and code != ''">
+			and code = #{code}
+		</if>
+		<if test="creator != null and creator != ''">
+			and creator = #{creator}
+		</if>
+		<if test="updater != null and updater != ''">
+			and updater = #{updater}
+		</if>
+		<if test="isdelete != null">
+			and isdelete = #{isdelete}
+		</if>
+		<if test="iseffect != null ">
+			and iseffect = #{iseffect}
+		</if>
+		<if test="descr != null and descr != ''">
+			and descr like CONCAT('%', #{descr}, '%')
+		</if>
+<!-- 		<if test="sbegintime != null and sbegintime != '' and sendtime != null and sendtime != ''"> -->
+<!-- 			and o.createtime between #{sbegintime} and #{sendtime} -->
+<!-- 		</if> -->
+	</sql>
+
+	<!-- 插入记录 -->
+	<insert id="insert" parameterType="Object">
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into project
+		(
+		project_name,user_code,all_score,student_score,teacher_score,grade,time,
+		id,code,createtime,updatetime,creator,updater,isdelete,iseffect,descr
+		)
+		values(
+		#{projectName},#{userCode}, #{allScore},#{studentScore}, #{teacherScore},#{grade},#{time},
+		#{id},#{code},#{createtime},#{updatetime},#{creator},#{updater},#{isdelete},#{iseffect},#{descr}
+		)
+	</insert>
+	
+	<!-- 根据code删除记录 -->
+	<delete id="delete" parameterType="Object">
+		delete from project where code = #{code}
+	</delete>
+	
+	<!-- 多条件删除记录 -->
+	<delete id="deleteModel" parameterType="Object">
+		delete from project
+		<include refid="Example_Where_Clause" />
+	</delete>
+	
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="update" parameterType="Object">
+		update project set
+		<trim suffixOverrides=",">
+			<if test="projectName != null and projectName != '' ">
+				project_name = #{projectName},
+			</if>
+			<if test="userCode != null and userCode != '' ">
+				user_code = #{userCode},
+			</if>
+			<if test="allScore != null and allScore != '' ">
+				all_score = #{allScore},
+			</if>
+			<if test="studentScore != null and studentScore != '' ">
+				student_score = #{studentScore},
+			</if>
+			<if test="studentGrade != null and studentGrade != '' ">
+				student_grade = #{studentGrade},
+			</if>
+			<if test="teacherScore != null and teacherScore != '' ">
+				teacher_score = #{teacherScore},
+			</if>
+			<if test="grade != null and grade != '' ">
+				grade = #{grade},
+			</if>
+			
+			<if test="id != null">
+				id = #{id},
+			</if>
+			<if test="creator != null and creator != ''">
+				creator = #{creator},
+			</if>
+			<if test="updater != null and updater != ''">
+				updater = #{updater},
+			</if>
+			<if test="isdelete != null">
+				isdelete = #{isdelete},
+			</if>
+			<if test="iseffect != null ">
+				iseffect = #{iseffect},
+			</if>
+			<if test="descr != null and descr != ''">
+				descr = #{descr},
+			</if>
+		</trim>
+		where code = #{code}
+	</update>
+	
+	<update id="updateAll" parameterType="Object">
+		update project set
+		project_name = #{projectName},user_code = #{userCode},all_score = #{allScore},student_score = #{studentScore},teacher_score = #{teacherScore},grade = #{grade},
+		id = #{id},createtime = #{createtime},updatetime = #{updatetime},creator = #{creator},updater = #{updater},isdelete = #{isdelete},iseffect = #{iseffect},descr = #{descr}
+		where code = #{code}
+	</update>
+	
+	<!-- 根据code查询主要的  -->
+	<select id="selectCode" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Main_Column_List" />
+		from project				
+		where code = #{code}
+	</select>
+
+	<!-- 查询数量 -->
+	<select id="selectCount" resultType="java.lang.Integer" parameterType="Object">
+		select count(1) 
+		from  project
+		<include refid="Example_Where_Clause" />
+	</select>
+	
+	<!-- 查询主要 -->
+	<select id="select" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Main_Column_List" />
+		from  project		
+		<include refid="Example_Where_Clause" />
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>
+	
+	<!-- 查询全部 -->
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from  project		
+		<include refid="Example_Where_Clause" />
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>
+	
+	<!-- 查询关联或者子查询的信息 /未用-->
+	<select id="selectJoin" resultMap="HighResultMap" parameterType="Object">
+		select 
+		p.project_name pProjectName,p.user_code pUserCode,p.all_score pAllScore,p.student_score pStudentScore,p.teacher_score pTeacherScore,p.grade pGrade,p.code pCode,p.time pTime,p.descr pDescr,p.student_grade pStudentGrade,
+		u.user_name uUserName,u.true_name uTrueName,u.role_code uRoleCode,u.calss_code uCalssCode
+		from project p
+		left outer join user u on u.code = p.user_code	
+		left outer join class c on c.code = u.calss_code		
+		<include refid="Example_Where_Clause" />
+		
+		<if test="cClass.code != null and cClass.code != ''">
+			and c.code=#{cClass.code}
+		</if>
+
+		<if test="cClass.teacherCode != null and cClass.teacherCode != ''  and ( cClass.code == null  or cClass.code == '')">
+			and c.createtime in (select MAX(c1.createtime) from class c1 where c1.teacher_code = #{cClass.teacherCode})
+		</if>
+		
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>	
+	
+</mapper>   

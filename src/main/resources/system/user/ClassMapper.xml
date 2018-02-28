@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="system.user.mapper.ClassMapper">
+
+	<!-- 映射 -->
+	<resultMap id="BaseResultMap" type="system.user.model.ClassModel">
+		<result column="class_name" property="className" />
+		<result column="teacher_code" property="teacherCode" />
+		
+		<result column="id" property="id" />
+		<result column="code" property="code" />
+		<result column="createtime" property="createtime" />
+		<result column="updatetime" property="updatetime" />
+		<result column="creator" property="creator" />
+		<result column="updater" property="updater" />
+		<result column="isdelete" property="isdelete" />
+		<result column="iseffect" property="iseffect" />
+		<result column="descr" property="descr" />
+	</resultMap>
+	
+	<!-- 高级映射c.class_name cClassName,c.code cCode,c.isnowcalss cIsnowcalss,
+		u.user_name uUserName,u.password uPassword,u.true_name uTrueName,u.role_code uRoleCode,u.calss_code uClassCode,u.code uCode -->
+	<resultMap id="HighResultMap" type="system.user.model.ClassModel">
+		<result column="cClassName" property="className" />
+		<result column="cCode" property="code" />
+		<result column="cIsnowcalss" property="isNowCalss" />
+		
+		<collection property="uUserList" ofType="system.user.model.UserModel">
+	    <result property="userName" column="uUserName"/>
+	    <result property="password" column="uPassword"/>
+	    <result property="trueName" column="uTrueName"/>
+	    <result property="roleCode" column="uRoleCode"/>
+	    <result property="calssCode" column="uClassCode"/>
+	    <result property="code" column="uCode"/>
+	  </collection>
+		
+	</resultMap>
+
+	<!-- 全部字段 -->
+	<sql id="Base_Column_List">
+		class_name,teacher_code,
+		id,code,createtime,updatetime,creator,updater,isdelete,iseffect,descr
+	</sql>
+	
+	<!-- 主要字段 -->
+	<sql id="Main_Column_List">
+		class_name,teacher_code
+	</sql>
+	
+	<!-- 子查询/未改 -->
+	<sql id="Join_Column_List">
+		a,b,
+		(select t2.c
+		from table2) c
+	</sql>
+	
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<if test="className != null and className != ''">
+			and c.class_name = #{className}
+		</if>
+		<if test="teacherCode != null and teacherCode != ''">
+			and c.teacher_code = #{teacherCode}
+		</if>
+		
+		<if test="id != null">
+			and c.id = #{id}
+		</if>
+		<if test="code != null and code != ''">
+			and c.code = #{code}
+		</if>
+		<if test="creator != null and creator != ''">
+			and c.creator = #{creator}
+		</if>
+		<if test="updater != null and updater != ''">
+			and c.updater = #{updater}
+		</if>
+		<if test="isdelete != null">
+			and c.isdelete = #{isdelete}
+		</if>
+		<if test="iseffect != null ">
+			and c.iseffect = #{iseffect}
+		</if>
+		<if test="descr != null and descr != ''">
+			and c.descr like CONCAT('%', #{descr}, '%')
+		</if>
+<!-- 		<if test="sbegintime != null and sbegintime != '' and sendtime != null and sendtime != ''"> -->
+<!-- 			and o.createtime between #{sbegintime} and #{sendtime} -->
+<!-- 		</if> -->
+	</sql>
+
+	<!-- 插入记录 -->
+	<insert id="insert" parameterType="Object">
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into class
+		(
+		<include refid="Base_Column_List" />
+		)
+		values(
+		#{className},#{teacherCode},#{isNowCalss},
+		#{id},#{code},#{createtime},#{updatetime},#{creator},#{updater},#{isdelete},#{iseffect},#{descr}
+		)
+	</insert>
+	
+	<!-- 根据code删除记录 -->
+	<delete id="delete" parameterType="Object">
+		delete from class where code = #{code}
+	</delete>
+	
+	<!-- 多条件删除记录 -->
+	<delete id="deleteModel" parameterType="Object">
+		delete from class
+		<include refid="Example_Where_Clause" />
+	</delete>
+	
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="update" parameterType="Object">
+		update class set
+		<trim suffixOverrides=",">
+			<if test="className != null and className != '' ">
+				class_name = #{className},
+			</if>
+			<if test="teacherCode != null and teacherCode != '' ">
+				teacher_code = #{teacherCode},
+			</if>
+			<if test="teacherCode != null and teacherCode != '' ">
+				isnowcalss = #{isNowCalss},
+			</if>
+			
+			<if test="id != null">
+				id = #{id},
+			</if>
+			<if test="creator != null and creator != ''">
+				creator = #{creator},
+			</if>
+			<if test="updater != null and updater != ''">
+				updater = #{updater},
+			</if>
+			<if test="isdelete != null">
+				isdelete = #{isdelete},
+			</if>
+			<if test="iseffect != null ">
+				iseffect = #{iseffect},
+			</if>
+			<if test="descr != null and descr != ''">
+				descr = #{descr},
+			</if>
+		</trim>
+		where code = #{code}
+	</update>
+	
+	<update id="updateAll" parameterType="Object">
+		update class set
+		class_name = #{className},teacher_code = #{teacherCode},isnowcalss = #{isNowCalss},
+		id = #{id},createtime = #{createtime},updatetime = #{updatetime},creator = #{creator},updater = #{updater},isdelete = #{isdelete},iseffect = #{iseffect},descr = #{descr}
+		where code = #{code}
+	</update>
+	
+	<!-- 根据code查询主要的  -->
+	<select id="selectCode" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Main_Column_List" />
+		from class				
+		where code = #{code}
+	</select>
+
+	<!-- 查询数量 -->
+	<select id="selectCount" resultType="java.lang.Integer" parameterType="Object">
+		select count(1) 
+		from  class
+		<include refid="Example_Where_Clause" />
+	</select>
+	
+	<!-- 查询主要 -->
+	<select id="select" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Main_Column_List" />
+		from  class		
+		<include refid="Example_Where_Clause" />
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>
+	
+	<!-- 查询全部 -->
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from  class		
+		<include refid="Example_Where_Clause" />
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>
+	
+	<!-- 查询关联或者子查询的信息 根据老师的code，查询所有的班级包含学生/已用-->
+	<select id="selectJoin" resultMap="HighResultMap" parameterType="Object">
+		select 
+		c.class_name cClassName,c.code cCode,
+		u.user_name uUserName,u.password uPassword,u.true_name uTrueName,u.role_code uRoleCode,u.calss_code uClassCode,u.code uCode
+		from  class c
+		left outer join user u on u.calss_code = c.code		
+		<include refid="Example_Where_Clause" />
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>	
+	
+</mapper>   

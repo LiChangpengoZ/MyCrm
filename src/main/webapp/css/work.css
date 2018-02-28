@@ -1,0 +1,62 @@
+.dialine{
+	margin-top: 10px;
+	margin-left: 10px;
+}
+.selectbox{
+	margin-left: 40px;
+	margin-top: 25px;
+	font-size: 14px;
+}	
+.selectbox .combo{
+	width: 140px !important;
+}
+.selectbox b{
+	margin-left: 20px;
+}
+.selectbox a{
+	margin-left: 20px;
+}
+.head{
+	height: 34px;
+	width: 100%; 
+	background-color: #F4F7F8;
+	color:#903;
+	font-size: 18px;
+	text-align: center;
+	line-height: 34px;	
+}
+.datagrid-row {
+	height: 36px;
+}
+.datagrid-header{
+	height: 38px !important;
+	background: linear-gradient(to bottom,#fdfdfd 0,#F0F5F7 100%);
+}
+.datagrid-htable{
+	height: 38px !important;
+}
+.datagrid-body td{
+	border-width: 0 1px 0px 0 !important;
+}
+.selectbox .combo{
+	height: 30px !important;
+	border-radius:0px !important;
+}
+.selectbox .combo-arrow{
+	width: 30px !important;
+    height: 30px !important;
+}
+.selectbox .textbox-text{
+	height: 30px !important;
+	line-height: 20px !important;
+	margin-left: 0px !important;
+	padding: 0px !important;
+}
+.selectbox .easyui-linkbutton{
+	border-radius:0px !important;
+	height: 30px;
+	width: 70px;
+}
+.selectbox .easyui-linkbutton .l-btn-text{
+	margin: 3px 4px 0 24px !important;
+}

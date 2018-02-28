@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="system.user.mapper.UserMapper">
+
+	<!-- 映射 -->
+	<resultMap id="BaseResultMap" type="system.user.model.UserModel">
+		<result column="user_name" property="userName" />
+		<result column="password" property="password" />
+		<result column="true_name" property="trueName" />
+		<result column="role_code" property="roleCode" />
+		<result column="calss_code" property="calssCode" />
+		
+		<result column="id" property="id" />
+		<result column="code" property="code" />
+		<result column="createtime" property="createtime" />
+		<result column="updatetime" property="updatetime" />
+		<result column="creator" property="creator" />
+		<result column="updater" property="updater" />
+		<result column="isdelete" property="isdelete" />
+		<result column="iseffect" property="iseffect" />
+		<result column="descr" property="descr" />
+	</resultMap>
+	
+	<!-- 高级映射 -->
+	<resultMap id="HighResultMap" type="system.user.model.UserModel">
+	  <result property="userName" column="uUserName"/>
+	  <result property="password" column="uPassword"/>
+	  <result property="trueName" column="uTrueName"/>
+	  <result property="code" column="uCode"/>
+	  
+	  <association property="rRole" javaType="system.user.model.RoleModel">
+	  	<result property="roleName" column="rRoleName"/>
+	   	<result property="code" column="rCode"/>
+	  </association>
+	  
+	  <association property="cClass" javaType="system.user.model.ClassModel">
+	  	<result property="className" column="cClassName"/>
+	    <result property="teacherCode" column="cTeacherCode"/>
+	    <result property="code" column="cCode"/>
+	  </association>
+	  
+	  <collection property="pPermissionList" ofType="system.user.model.PermissionModel">
+	    <result property="permissionName" column="pPermissionName"/>
+	    <result property="type" column="pType"/>
+	    <result property="url" column="pUrl"/>
+	    <result property="pcode" column="pPcode"/>
+	    <result property="code" column="pCode"/>
+	    
+	    <result property="series" column="rprSeries"/>
+	  </collection>
+	</resultMap>
+
+	<!-- 全部字段 -->
+	<sql id="Base_Column_List">
+		u.user_name,u.password,u.true_name,u.role_code,u.calss_code,
+		u.id,u.code,u.createtime,u.updatetime,u.creator,u.updater,u.isdelete,u.iseffect,u.descr
+	</sql>
+	
+	<!-- 主要字段 -->
+	<sql id="Main_Column_List">
+		user_name,password,true_name,role_code,calss_code
+	</sql>
+	
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<if test="userName != null and userName != ''">
+			and u.user_name = #{userName}
+		</if>
+		<if test="password != null and password != ''">
+			and u.password = #{password}
+		</if>
+		<if test="trueName != null and trueName != ''">
+			and u.true_name like CONCAT('%', #{trueName}, '%')
+		</if>
+		<if test="calssCode != null and calssCode != ''">
+			and u.class_code = #{calssCode}
+		</if>
+		<if test="roleCode != null and roleCode != ''">
+			and u.role_code = #{roleCode}
+		</if>
+		
+		<if test="id != null">
+			and u.id = #{id}
+		</if>
+		<if test="code != null and code != ''">
+			and u.code = #{code}
+		</if>
+		<if test="creator != null and creator != ''">
+			and u.creator = #{creator}
+		</if>
+		<if test="updater != null and updater != ''">
+			and u.updater = #{updater}
+		</if>
+		<if test="isdelete != null">
+			and u.isdelete = #{isdelete}
+		</if>
+		<if test="iseffect != null ">
+			and u.iseffect = #{iseffect}
+		</if>
+		<if test="descr != null and descr != ''">
+			and u.descr like CONCAT('%', #{descr}, '%')
+		</if>
+<!-- 		<if test="sbegintime != null and sbegintime != '' and sendtime != null and sendtime != ''"> -->
+<!-- 			and o.createtime between #{sbegintime} and #{sendtime} -->
+<!-- 		</if> -->
+	</sql>
+
+	<!-- 插入记录 -->
+	<insert id="insert" parameterType="Object">
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into user u
+		(
+		<include refid="Base_Column_List" />
+		)
+		values(
+		#{userName},#{password}, #{trueName},#{roleCode}, #{calssCode},
+		#{id},#{code},#{createtime},#{updatetime},#{creator},#{updater},#{isdelete},#{iseffect},#{descr}
+		)
+	</insert>
+	
+	<!-- 根据code删除记录 -->
+	<delete id="delete" parameterType="Object">
+		delete from user u where code = #{code}
+	</delete>
+	
+	<!-- 多条件删除记录 -->
+	<delete id="deleteModel" parameterType="Object">
+		delete from user u
+		<include refid="Example_Where_Clause" />
+	</delete>
+	
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="update" parameterType="Object">
+		update user u set
+		<trim suffixOverrides=",">
+			<if test="userName != null and userName != '' ">
+				user_name = #{userName},
+			</if>
+			<if test="password != null and password != '' ">
+				password = #{password},
+			</if>
+			<if test="trueName != null and trueName != '' ">
+				true_name = #{trueName},
+			</if>
+			<if test="roleCode != null and roleCode != '' ">
+				role_code = #{roleCode},
+			</if>
+			<if test="calssCode != null and calssCode != '' ">
+				calss_code = #{calssCode},
+			</if>
+			
+			<if test="id != null">
+				id = #{id},
+			</if>
+			<if test="creator != null and creator != ''">
+				creator = #{creator},
+			</if>
+			<if test="updater != null and updater != ''">
+				updater = #{updater},
+			</if>
+			<if test="isdelete != null">
+				isdelete = #{isdelete},
+			</if>
+			<if test="iseffect != null ">
+				iseffect = #{iseffect},
+			</if>
+			<if test="descr != null and descr != ''">
+				descr = #{descr},
+			</if>
+		</trim>
+		where code = #{code}
+	</update>
+	
+	<update id="updateAll" parameterType="Object">
+		update user u set
+		user_name = #{userName},password = #{password},true_name = #{trueName},role_code = #{roleCode},calss_code = #{calssCode},
+		id = #{id},createtime = #{createtime},updatetime = #{updatetime},creator = #{creator},updater = #{updater},isdelete = #{isdelete},iseffect = #{iseffect},descr = #{descr}
+		where code = #{code}
+	</update>
+	
+	<!-- 根据code查询主要的  -->
+	<select id="selectCode" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Main_Column_List" />
+		from user u				
+		where code = #{code}
+	</select>
+
+	<!-- 查询数量 -->
+	<select id="selectCount" resultType="java.lang.Integer" parameterType="Object">
+		select count(1) 
+		from  user u
+		<include refid="Example_Where_Clause" />
+	</select>
+	
+	<!-- 查询主要 -->
+	<select id="select" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Main_Column_List" />
+		from  user u		
+		<include refid="Example_Where_Clause" />
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>
+	
+	<!-- 查询全部 -->
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from  user u		
+		<include refid="Example_Where_Clause" />
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>
+	
+	<!-- 查询关联或者子查询的信息/true -->
+	<select id="selectJoin" resultMap="HighResultMap" parameterType="Object">
+		select 
+		u.user_name uUserName,u.password uPassword,u.true_name uTrueName,u.code uCode,
+		r.role_name rRoleName,r.code rCode,
+		p.permission_name pPermissionName,p.type pType,p.url pUrl,p.pcode pPcode,p.code pCode,
+		c.class_name cClassName,c.teacher_code cTeacherCode,c.code cCode,
+		rpr.series rprSeries
+		from  user u
+		left outer join role r on u.role_code = r.code
+		left outer join role_permission_rel rpr on rpr.role_code = r.code
+		left outer join permission p on p.code = rpr.permission_code
+		left outer join class c on c.code = u.calss_code		
+		<include refid="Example_Where_Clause" />
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>	
+	
+</mapper>   

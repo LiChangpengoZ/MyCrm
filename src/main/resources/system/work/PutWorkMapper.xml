@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="system.work.mapper.PutWorkMapper">
+
+	<!-- 映射 -->
+	<resultMap id="BaseResultMap" type="system.work.model.PutWorkModel">
+		<result column="teacher_code" property="teacherCode" />
+		<result column="tm" property="tm" />
+		<result column="grade_standard" property="gradeStandard" />
+		<result column="type" property="type" />
+		<result column="time" property="time" />
+		
+		<result column="id" property="id" />
+		<result column="code" property="code" />
+		<result column="createtime" property="createtime" />
+		<result column="updatetime" property="updatetime" />
+		<result column="creator" property="creator" />
+		<result column="updater" property="updater" />
+		<result column="isdelete" property="isdelete" />
+		<result column="iseffect" property="iseffect" />
+		<result column="descr" property="descr" />
+	</resultMap>
+	
+	<!-- 全部字段 -->
+	<sql id="Base_Column_List">
+		p.teacher_code,p.tm,p.grade_standard,p.type,p.time,
+		p.id,p.code,p.createtime,p.updatetime,p.creator,p.updater,p.isdelete,p.iseffect,p.descr
+	</sql>
+	
+	<!-- 主要字段 -->
+	<sql id="Main_Column_List">
+		teacher_code,tm,grade_standard,type
+	</sql>
+	
+	<!-- 子查询/未改 -->
+	<sql id="Join_Column_List">
+		a,b,
+		(select t2.c
+		from table2) c
+	</sql>
+	
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<if test="teacherCode != null and teacherCode != ''">
+			and p.teacher_code = #{teacherCode}
+		</if>
+		<if test="tm != null and tm != ''">
+			and p.tm like CONCAT('%', #{tm}, '%')
+		</if>
+		<if test="type != null and type != ''">
+			and p.type = #{type}
+		</if>
+		
+		<if test="id != null">
+			and p.id = #{id}
+		</if>
+		<if test="code != null and code != ''">
+			and p.code = #{code}
+		</if>
+		<if test="creator != null and creator != ''">
+			and p.creator = #{creator}
+		</if>
+		<if test="updater != null and updater != ''">
+			and p.updater = #{updater}
+		</if>
+		<if test="isdelete != null">
+			and p.isdelete = #{isdelete}
+		</if>
+		<if test="iseffect != null ">
+			and p.iseffect = #{iseffect}
+		</if>
+		<if test="descr != null and descr != ''">
+			and p.descr like CONCAT('%', #{descr}, '%')
+		</if>
+<!-- 		<if test="sbegintime != null and sbegintime != '' and sendtime != null and sendtime != ''"> -->
+<!-- 			and o.createtime between #{sbegintime} and #{sendtime} -->
+<!-- 		</if> -->
+	</sql>
+
+	<!-- 插入记录 -->
+	<insert id="insert" parameterType="Object">
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into put_work
+		(
+		teacher_code,tm,grade_standard,type,time,
+		id,code,createtime,updatetime,creator,updater,isdelete,iseffect,descr
+		)
+		values(
+		#{teacherCode},#{tm}, #{gradeStandard},#{type},#{time},
+		#{id},#{code},#{createtime},#{updatetime},#{creator},#{updater},#{isdelete},#{iseffect},#{descr}
+		)
+	</insert>
+	
+	<!-- 根据code删除记录 -->
+	<delete id="delete" parameterType="Object">
+		delete from put_work where code = #{code}
+	</delete>
+	
+	<!-- 多条件删除记录 -->
+	<delete id="deleteModel" parameterType="Object">
+		delete from put_work
+		<include refid="Example_Where_Clause" />
+	</delete>
+	
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="update" parameterType="Object">
+		update put_work set
+		<trim suffixOverrides=",">
+			<if test="teacherCode != null and teacherCode != '' ">
+				teacher_code = #{teacherCode},
+			</if>
+			<if test="tm != null and tm != '' ">
+				tm = #{tm},
+			</if>
+			<if test="gradeStandard != null and gradeStandard != '' ">
+				grade_standard = #{gradeStandard},
+			</if>
+			<if test="type != null and type != '' ">
+				type = #{type},
+			</if>
+			<if test="time != null and time != '' ">
+				time = #{time},
+			</if>
+			
+			<if test="id != null">
+				id = #{id},
+			</if>
+			<if test="updatetime != null and updatetime != ''">
+				updatetime = #{updatetime},
+			</if>
+			<if test="updater != null and updater != ''">
+				updater = #{updater},
+			</if>
+			<if test="isdelete != null">
+				isdelete = #{isdelete},
+			</if>
+			<if test="iseffect != null ">
+				iseffect = #{iseffect},
+			</if>
+			<if test="descr != null and descr != ''">
+				descr = #{descr},
+			</if>
+		</trim>
+		where code = #{code}
+	</update>
+	
+	<update id="updateAll" parameterType="Object">
+		update put_work set
+		teacher_code = #{teacherCode},tm = #{tm},grade_standard = #{gradeStandard},type = #{type},
+		id = #{id},createtime = #{createtime},updatetime = #{updatetime},creator = #{creator},updater = #{updater},isdelete = #{isdelete},iseffect = #{iseffect},descr = #{descr}
+		where code = #{code}
+	</update>
+	
+	<!-- 根据code查询主要的  -->
+	<select id="selectCode" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Main_Column_List" />
+		from put_work				
+		where code = #{code}
+	</select>
+
+	<!-- 查询数量/用 -->
+	<select id="selectCount" resultType="java.lang.Integer" parameterType="Object">
+		select count(1) 
+		from  put_work p
+		<include refid="Example_Where_Clause" />
+	</select>
+	
+	<!-- 查询主要 -->
+	<select id="select" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Main_Column_List" />
+		from  put_work p
+		<include refid="Example_Where_Clause" />
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>
+	
+	<!-- 查询全部 /用-->
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from  put_work p		
+		<include refid="Example_Where_Clause" />
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>
+	
+	<!-- 查询关联或者子查询的信息 /未用-->
+<!-- 	<select id="selectJoin" resultMap="HighResultMap" parameterType="Object"> -->
+<!-- 		select  -->
+<!-- 		p.teacher_code pTeacherCode,p.time pTime,p.tm pTm,p.grade_standard pGradeStandard,p.code pCode, -->
+<!-- 		m.student_code mStudentCode,m.oneself_score mOneselfScore,m.oneself_grade mOnerselfGrade,m.teacher_score mTeacherScore,m.teacher_grade mTeacherGrade, -->
+<!-- 		u.user_name uUserName,u.true_name uTrueName,u.role_code uRoleCode,u.calss_code uClassCode -->
+<!-- 		from  put_work p -->
+<!-- 		left outer join my_work m on m.put_work_code = p.code -->
+<!-- 		left outer join user u on m.student_code = u.code		 -->
+<!-- 		<include refid="Example_Where_Clause" /> -->
+<!-- 		<if test="sStudentCode != null and sStudentCode != ''"> -->
+<!-- 			and m.student_code = #{sStudentCode} -->
+<!-- 		</if> -->
+<!-- 		<if test="sortField != null and sortField != ''"> -->
+<!-- 			order by ${sortField} ${orderBy} -->
+<!-- 		</if> -->
+<!-- 		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' "> -->
+<!-- 			limit #{beginNumber},#{rowsNumber} -->
+<!-- 		</if> -->
+<!-- 	</select>	 -->
+	
+</mapper>   

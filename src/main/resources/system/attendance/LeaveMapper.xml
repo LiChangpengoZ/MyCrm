@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="system.attendance.mapper.LeaveMapper">
+
+	<!-- 映射 -->
+	<resultMap id="BaseResultMap" type="system.attendance.model.LeaveModel">
+		<result column="user_code" property="userCode" />
+		<result column="why" property="why" />
+		<result column="time" property="time" />
+		<result column="begin_time" property="beginTime" />
+		<result column="end_time" property="endTime" />
+		<result column="status" property="status" />
+		<result column="uTrueName" property="uTrueName" />
+		
+		<result column="id" property="id" />
+		<result column="code" property="code" />
+		<result column="createtime" property="createtime" />
+		<result column="updatetime" property="updatetime" />
+		<result column="creator" property="creator" />
+		<result column="updater" property="updater" />
+		<result column="isdelete" property="isdelete" />
+		<result column="iseffect" property="iseffect" />
+		<result column="descr" property="descr" />
+	</resultMap>
+
+	<!-- 全部字段 -->
+	<sql id="Base_Column_List">
+		l.user_code,l.why,l.time,l.begin_time,l.end_time,l.status,
+		l.id,l.code,l.createtime,l.updatetime,l.creator,l.updater,l.isdelete,l.iseffect,l.descr
+	</sql>
+	
+	<!-- 主要字段 -->
+	<sql id="Main_Column_List">
+		user_code,why,time,begin_time,end_time,status
+	</sql>
+	
+	<!-- 子查询/未改 -->
+	<sql id="Join_Column_List">
+		a,b,
+		(select t2.c
+		from table2) c
+	</sql>
+	
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<if test="userCode != null and userCode != ''">
+			and l.user_code = #{userCode}
+		</if>
+		<if test="why != null and why != ''">
+			and l.why like CONCAT('%', #{why}, '%')
+		</if>
+		<if test="status != null and status != ''">
+			and l.status = #{status}
+		</if>
+		
+		<if test="id != null">
+			and l.id = #{id}
+		</if>
+		<if test="code != null and code != ''">
+			and l.code = #{code}
+		</if>
+		<if test="creator != null and creator != ''">
+			and l.creator = #{creator}
+		</if>
+		<if test="updater != null and updater != ''">
+			and l.updater = #{updater}
+		</if>
+		<if test="isdelete != null">
+			and l.isdelete = #{isdelete}
+		</if>
+		<if test="iseffect != null ">
+			and l.iseffect = #{iseffect}
+		</if>
+		<if test="descr != null and descr != ''">
+			and l.descr like CONCAT('%', #{descr}, '%')
+		</if>
+		<if test="sbegintime != null and sbegintime != '' and sendtime != null and sendtime != ''">
+			and l.end_time between #{sbegintime} and #{sendtime}
+		</if>
+	</sql>
+
+	<!-- 插入记录 -->
+	<insert id="insert" parameterType="Object">
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into my_leave
+		(
+		user_code,why,time,begin_time,end_time,status,
+		id,code,createtime,updatetime,creator,updater,isdelete,iseffect,descr
+		)
+		values(
+		#{userCode},#{why}, #{time},#{beginTime}, #{endTime}, #{status},
+		#{id},#{code},#{createtime},#{updatetime},#{creator},#{updater},#{isdelete},#{iseffect},#{descr}
+		)
+	</insert>
+	
+	<!-- 根据code删除记录 -->
+	<delete id="delete" parameterType="Object">
+		delete from my_leave where code = #{code}
+	</delete>
+	
+	<!-- 多条件删除记录 -->
+	<delete id="deleteModel" parameterType="Object">
+		delete from my_leave l
+		<include refid="Example_Where_Clause" />
+	</delete>
+	
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="update" parameterType="Object">
+		update my_leave set
+		<trim suffixOverrides=",">
+			<if test="userCode != null and userCode != '' ">
+				user_code = #{userCode},
+			</if>
+			<if test="why != null and why != '' ">
+				why = #{why},
+			</if>
+			<if test="time != null and time != '' ">
+				time = #{time},
+			</if>
+			<if test="beginTime != null and beginTime != '' ">
+				begin_time = #{beginTime},
+			</if>
+			<if test="endTime != null and endTime != '' ">
+				end_time = #{endTime},
+			</if>
+			<if test="status != null and status != '' ">
+				status = #{status},
+			</if>
+			
+			<if test="id != null">
+				id = #{id},
+			</if>
+			<if test="updatetime != null and updatetime != ''">
+				updatetime = #{updatetime},
+			</if>
+			<if test="updater != null and updater != ''">
+				updater = #{updater},
+			</if>
+			<if test="isdelete != null">
+				isdelete = #{isdelete},
+			</if>
+			<if test="iseffect != null ">
+				iseffect = #{iseffect},
+			</if>
+			<if test="descr != null and descr != ''">
+				descr = #{descr},
+			</if>
+		</trim>
+		where code = #{code}
+	</update>
+	
+	<update id="updateAll" parameterType="Object">
+		update my_leave l set
+		user_code = #{userCode},why = #{why},time = #{time},begin_time = #{beginTime},end_time = #{endTime},status = #{status},
+		id = #{id},createtime = #{createtime},updatetime = #{updatetime},creator = #{creator},updater = #{updater},isdelete = #{isdelete},iseffect = #{iseffect},descr = #{descr}
+		where code = #{code}
+	</update>
+	
+	<!-- 根据code查询主要的  -->
+	<select id="selectCode" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Main_Column_List" />
+		from my_leave l				
+		where code = #{code}
+	</select>
+
+	<!-- 查询数量 /已用 -->
+	<select id="selectCount" resultType="java.lang.Integer" parameterType="Object">
+		select count(1) 
+		from  my_leave l
+		left outer join user u on u.code = l.user_code
+		left outer join class c on c.code = u.calss_code
+		<include refid="Example_Where_Clause" />
+		<if test="cClass.code != null and cClass.code != ''">
+			and c.code=#{cClass.code}
+		</if>
+
+		<if test="cClass.teacherCode != null and cClass.teacherCode != ''  and ( cClass.code == null  or cClass.code == '')">
+			and c.createtime in (select MAX(c1.createtime) from class c1 where c1.teacher_code = #{cClass.teacherCode})
+		</if>
+	</select>
+	
+	<!-- 查询主要 -->
+	<select id="select" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Main_Column_List" />
+		from  my_leave l		
+		<include refid="Example_Where_Clause" />
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>
+	
+	<!-- 查询全部 -->
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from  my_leave l		
+		<include refid="Example_Where_Clause" />
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>
+	
+	<!-- 查询关联或者子查询的信息 /以用-->
+	<select id="selectJoin" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />,
+		u.true_name uTrueName
+		from  my_leave l
+		left outer join user u on u.code = l.user_code
+		left outer join class c on c.code = u.calss_code
+		<include refid="Example_Where_Clause" />
+
+		<if test="cClass.code != null and cClass.code != ''">
+			and c.code=#{cClass.code}
+		</if>
+
+		<if test="cClass.teacherCode != null and cClass.teacherCode != ''  and ( cClass.code == null  or cClass.code == '')">
+			and c.createtime in (select MAX(c1.createtime) from class c1 where c1.teacher_code = #{cClass.teacherCode})
+		</if>
+		
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>	
+	
+</mapper>   

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="system.attendance.mapper.WorkAttendanceMapper">
+
+	<!-- 映射 -->
+	<resultMap id="BaseResultMap" type="system.attendance.model.WorkAttendanceModel">
+		<result column="user_code" property="userCode" />
+		<result column="one_check" property="oneCheck" />
+		<result column="two_check" property="twoCheck" />
+		<result column="three_check" property="threeCheck" />
+		<result column="four_check" property="fourCheck" />
+		<result column="five_check" property="fiveCheck" />
+		<result column="six_check" property="sixCheck" />
+		<result column="score" property="score" />
+		<result column="time" property="time" />
+		<result column="uTrueName" property="uTrueName" />
+		
+		<result column="id" property="id" />
+		<result column="code" property="code" />
+		<result column="createtime" property="createtime" />
+		<result column="updatetime" property="updatetime" />
+		<result column="creator" property="creator" />
+		<result column="updater" property="updater" />
+		<result column="isdelete" property="isdelete" />
+		<result column="iseffect" property="iseffect" />
+		<result column="descr" property="descr" />
+	</resultMap>
+
+	<!-- 全部字段 -->
+	<sql id="Base_Column_List">
+		w.user_code,w.one_check,w.two_check,w.three_check,w.four_check,w.five_check,w.six_check,w.score,time,
+		w.id,w.code,w.createtime,w.updatetime,w.creator,w.updater,w.isdelete,w.iseffect,w.descr
+	</sql>
+	
+	<!-- 主要字段 -->
+	<sql id="Main_Column_List">
+		user_code,one_check,two_check,three_check,four_check,five_check,six_check,score,time
+	</sql>
+	
+	<!-- 子查询/未改/可用 -->
+	<sql id="Join_Column_List">
+		a,b,
+		(select t2.c
+		from table2) c
+	</sql>
+	
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<if test="userCode != null and userCode != ''">
+			and w.user_code = #{userCode}
+		</if>
+		<if test="oneCheck != null and oneCheck != ''">
+			and w.one_check = #{oneCheck}
+		</if>
+		<if test="twoCheck != null and twoCheck != ''">
+			and w.two_check = #{twoCheck}
+		</if>
+		<if test="threeCheck != null and threeCheck != ''">
+			and w.three_check = #{threeCheck}
+		</if>
+		<if test="fourCheck != null and fourCheck != ''">
+			and w.four_check = #{fourCheck}
+		</if>
+		<if test="fiveCheck != null and fiveCheck != ''">
+			and w.five_check = #{fiveCheck}
+		</if>
+		<if test="sixCheck != null and sixCheck != ''">
+			and w.six_check = #{sixCheck}
+		</if>
+		<if test="score != null and score != ''">
+			and w.score = #{score}
+		</if>
+		<if test="sbegintime != null and sbegintime != '' and sendtime != null and sendtime != ''">
+			and w.time between #{sbegintime} and #{sendtime}
+		</if>
+		
+		<if test="id != null">
+			and w.id = #{id}
+		</if>
+		<if test="code != null and code != ''">
+			and w.code = #{code}
+		</if>
+		<if test="creator != null and creator != ''">
+			and w.creator = #{creator}
+		</if>
+		<if test="updater != null and updater != ''">
+			and w.updater = #{updater}
+		</if>
+		<if test="isdelete != null">
+			and w.isdelete = #{isdelete}
+		</if>
+		<if test="iseffect != null ">
+			and w.iseffect = #{iseffect}
+		</if>
+		<if test="descr != null and descr != ''">
+			and w.descr like CONCAT('%', #{descr}, '%')
+		</if>
+<!-- 		<if test="sbegintime != null and sbegintime != '' and sendtime != null and sendtime != ''"> -->
+<!-- 			and o.createtime between #{sbegintime} and #{sendtime} -->
+<!-- 		</if> -->
+	</sql>
+
+	<!-- 插入记录/可用-->
+	<insert id="insert" parameterType="Object">
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into work_attendance
+		(
+		user_code,one_check,two_check,three_check,four_check,five_check,six_check,score,time,
+		id,code,createtime,updatetime,creator,updater,isdelete,iseffect,descr
+		)
+		values(
+		#{userCode},#{oneCheck}, #{twoCheck},#{threeCheck}, #{fourCheck},#{fiveCheck}, #{sixCheck},#{score}, #{time},
+		#{id},#{code},#{createtime},#{updatetime},#{creator},#{updater},#{isdelete},#{iseffect},#{descr}
+		)
+	</insert>
+	
+	<!-- 根据code删除记录 -->
+	<delete id="delete" parameterType="Object">
+		delete from work_attendance where code = #{code}
+	</delete>
+	
+	<!-- 多条件删除记录 -->
+	<delete id="deleteModel" parameterType="Object">
+		delete from work_attendance
+		<include refid="Example_Where_Clause" />
+	</delete>
+	
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="update" parameterType="Object">
+		update work_attendance set
+		<trim suffixOverrides=",">
+			<if test="userCode != null and userCode != '' ">
+				user_code = #{userCode},
+			</if>
+			<if test="oneCheck != null and oneCheck != '' ">
+				one_check = #{oneCheck},
+			</if>
+			<if test="twoCheck != null and twoCheck != '' ">
+				two_check = #{twoCheck},
+			</if>
+			<if test="threeCheck != null and threeCheck != '' ">
+				three_check = #{threeCheck},
+			</if>
+			<if test="fourCheck != null and fourCheck != '' ">
+				four_check = #{fourCheck},
+			</if>
+			<if test="fiveCheck != null and fiveCheck != '' ">
+				five_check = #{fiveCheck},
+			</if>
+			<if test="sixCheck != null and sixCheck != '' ">
+				six_check = #{sixCheck},
+			</if>
+			<if test="score != null and score != '' ">
+				score = #{score},
+			</if>
+			<if test="time != null and time != '' ">
+				time = #{time},
+			</if>
+			
+			<if test="creator != null and creator != ''">
+				creator = #{creator},
+			</if>
+			<if test="updater != null and updater != ''">
+				updater = #{updater},
+			</if>
+			<if test="createtime != null and createtime != ''">
+				createtime = #{createtime},
+			</if>
+			<if test="updatetime != null and updatetime != ''">
+				updatetime = #{updatetime},
+			</if>
+			<if test="isdelete != null">
+				isdelete = #{isdelete},
+			</if>
+			<if test="iseffect != null ">
+				iseffect = #{iseffect},
+			</if>
+			<if test="descr != null and descr != ''">
+				descr = #{descr},
+			</if>
+		</trim>
+		where code = #{code}
+	</update>
+	
+	<update id="updateAll" parameterType="Object">
+		update work_attendance set
+		user_code = #{userCode},one_check = #{oneCheck},two_check = #{twoCheck},three_check = #{threeCheck},four_check = #{fourCheck},five_check = #{fiveCheck},six_check = #{sixCheck},score = #{score},time = #{time},
+		id = #{id},createtime = #{createtime},updatetime = #{updatetime},creator = #{creator},updater = #{updater},isdelete = #{isdelete},iseffect = #{iseffect},descr = #{descr}
+		where code = #{code}
+	</update>
+	
+	<!-- 根据code查询主要的  -->
+	<select id="selectCode" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Main_Column_List" />
+		from work_attendance				
+		where code = #{code}
+	</select>
+
+	<!-- 查询数量 /已用 -->
+	<select id="selectCount" resultType="java.lang.Integer" parameterType="Object">
+		select count(1) 
+		from  work_attendance w
+		left outer join user u on u.code = w.user_code
+		left outer join class c on c.code = u.calss_code
+		<include refid="Example_Where_Clause" />
+		<if test="cClass.code != null and cClass.code != ''">
+			and c.code=#{cClass.code}
+		</if>
+
+		<if test="cClass.teacherCode != null and cClass.teacherCode != ''  and ( cClass.code == null  or cClass.code == '')">
+			and c.createtime in (select MAX(c1.createtime) from class c1 where c1.teacher_code = #{cClass.teacherCode})
+		</if>
+	</select>
+	
+	<!-- 查询是否重复，根据code和时间/已用 -->
+	<select id="selectCountByUserCodeAndTime" resultType="java.lang.Integer" parameterType="Object">
+		select count(1) 
+		from  work_attendance w
+		where 1=1
+		<if test="userCode != null and userCode != ''">
+			and w.user_code = #{userCode}
+		</if>
+		<if test="time != null and time != ''">
+			and w.time = #{time}
+		</if>
+	</select>
+	
+	<!-- 查询主要 -->
+	<select id="select" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Main_Column_List" />
+		from  work_attendance		
+		<include refid="Example_Where_Clause" />
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>
+	
+	<!-- 查询全部 -->
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from  work_attendance		
+		<include refid="Example_Where_Clause" />
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>
+	
+	<!-- 查询关联或者子查询的信息 /以用-->
+	<select id="selectJoin" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />,
+		u.true_name uTrueName
+		from  work_attendance w
+		left outer join user u on u.code = w.user_code
+		left outer join class c on c.code = u.calss_code
+		<include refid="Example_Where_Clause" />
+
+		<if test="cClass.code != null and cClass.code != ''">
+			and c.code=#{cClass.code}
+		</if>
+
+		<if test="cClass.teacherCode != null and cClass.teacherCode != ''  and ( cClass.code == null  or cClass.code == '')">
+			and c.createtime in (select MAX(c1.createtime) from class c1 where c1.teacher_code = #{cClass.teacherCode})
+		</if>
+		
+		<if test="sortField != null and sortField != ''">
+			order by ${sortField} ${orderBy}
+		</if>
+		<if test="rowsNumber != null and rowsNumber != '' and pageNumber != null and pageNumber != '' ">
+			limit #{beginNumber},#{rowsNumber}
+		</if>
+	</select>	
+	
+</mapper>   
